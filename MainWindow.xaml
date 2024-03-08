@@ -1,0 +1,457 @@
+﻿<Window x:Class="Connect_4.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Connect_4"
+        mc:Ignorable="d"
+        Title="Connect 4"
+        Height="500" Width="900"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="#160a40">
+    <Window.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070"/>
+        <Style x:Key="OptionMarkFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FFF3F9FF"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="#FFD9ECFF"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
+        <Style TargetType="{x:Type CheckBox}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource OptionMark.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OptionMark.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="checkBoxBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid">
+                                    <Path x:Name="optionMark" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Fill="{StaticResource OptionMark.Static.Glyph}" Margin="1" Opacity="0" Stretch="None"/>
+                                    <Rectangle x:Name="indeterminateMark" Fill="{StaticResource OptionMark.Static.Glyph}" Margin="2" Opacity="0"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,-1,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="Black"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="White"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="#4d48b8"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="White"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="White"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="#625ae8"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="White"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="White"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="checkBoxBorder" Value="#4641a6"/>
+                                <Setter Property="BorderBrush" TargetName="checkBoxBorder" Value="{StaticResource OptionMark.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="White"/>
+                                <Setter Property="Fill" TargetName="indeterminateMark" Value="{StaticResource OptionMark.Pressed.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0"/>
+                                <Setter Property="Opacity" TargetName="indeterminateMark" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style
+TargetType="{x:Type Slider}">
+            <Setter
+Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter
+Property="Background" Value="Transparent"/>
+            <Setter
+Property="BorderBrush" Value="Transparent"/>
+
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Background="#211256"
+              Grid.ColumnSpan="2"
+              MouseDown="grid_MouseDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Connect 4"
+                       Foreground="White"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="Gill Sans MT" FontWeight="Bold"/>
+
+            <Button Name="btnClose" Content="Close" Grid.Column="7" Click="btnClose_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontFamily" Value="Gill Sans MT"/>
+                        <Setter Property="Background" Value="#f2133c"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#d41135"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#b50e2d"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Width="100" Height="20" CornerRadius="10" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="btnLb" Content="Leaderboard" Grid.Column="3" Click="btnLb_Click" Grid.ColumnSpan="2" Height="25" Margin="128.333,0,0,0" VerticalAlignment="Top" FontWeight="Normal">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontFamily" Value="Gill Sans MT"/>
+                        <Setter Property="Background" Value="#625ae8"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4d48b8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#4641a6"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="100" Height="20" CornerRadius="10" Background="{TemplateBinding Property=Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="btnSettings" Content="⚙Settings" Grid.Column="4" Click="btnSettings_Click" Grid.ColumnSpan="2" Height="25" Margin="128.333,0,0,0" VerticalAlignment="Top" FontWeight="Normal">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontFamily" Value="Gill Sans MT"/>
+                        <Setter Property="Background" Value="#625ae8"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4d48b8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#4641a6"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="100" Height="20" CornerRadius="10" Background="{TemplateBinding Property=Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="btnPlay" Content="▶Play" Click="btnPlay_Click" Grid.ColumnSpan="2" Height="81"  VerticalAlignment="Center" FontWeight="Normal" RenderTransformOrigin="0.623,1.203" Margin="-40,-1,40.333,-54.667">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="36"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontFamily" Value="Gill Sans MT"/>
+                        <Setter Property="Background" Value="#625ae8"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4d48b8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#4641a6"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="100" Height="50" CornerRadius="15" Background="{TemplateBinding Property=Background}" Margin="15,0,14.333,-32.667">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="btnReset" Content="Reset" Click="btnReset_Click" Grid.ColumnSpan="2" Height="81"  VerticalAlignment="Center" FontWeight="Normal"  Margin="-40,58,40.333,-113.667">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="36"/>
+                        <Setter Property="FontWeight" Value="Medium"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FontFamily" Value="Gill Sans MT"/>
+                        <Setter Property="Background" Value="#625ae8"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#4d48b8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#4641a6"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="100" Height="50" CornerRadius="15" Background="{TemplateBinding Property=Background}" Margin="15,0,14.333,-32.667">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+
+
+        </Grid>
+        <Border CornerRadius="15" BorderThickness="4" BorderBrush="White" Height="92" VerticalAlignment="Top" Margin="30,122.667,260,0" Grid.Row="1">
+            <TextBlock
+                       x:Name="notepad"
+                       FontSize="24"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="Gill Sans MT" FontWeight="Bold"  Grid.ColumnSpan="2" Height="80" Width="145" Margin="9,2,-2,2"/>
+
+        </Border>
+        <Border CornerRadius="15" BorderThickness="4" BorderBrush="White" Height="48" Width="129" VerticalAlignment="Top" Margin="36,224.667,285,0" Grid.Row="1">
+            <TextBox
+                GotFocus="txtPlayer_Click"
+                MaxLength="6"
+                x:Name="txtPlayer1"
+                Text="Player1"
+                FontSize="24"
+                Foreground="White"
+                Background="Transparent"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                CaretBrush="White"
+                BorderThickness="0"
+                FontFamily="Gill Sans MT" FontWeight="Bold"  Grid.ColumnSpan="2" Height="48" Width="119" Margin="4,0,-1.667,-12" TextChanged="txtPlayer_TextChanged"/>
+
+        </Border>
+
+        <Border CornerRadius="15" BorderThickness="4" BorderBrush="White" Height="48" Width="129" VerticalAlignment="Top" Margin="36,285.667,285,0" Grid.Row="1">
+            <TextBox
+                GotFocus="txtPlayer_Click"
+                MaxLength="6"
+                CaretBrush="White"
+                x:Name="txtPlayer2"
+                Text="Player2"
+                FontSize="24"
+                Foreground="White"
+                Background="Transparent"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                BorderThickness="0"
+                TextChanged="txtPlayer_TextChanged" FontFamily="Gill Sans MT"  Grid.ColumnSpan="2" Height="40" Width="119" Margin="4,4,-1.667,-4" FontWeight="Bold"/>
+        </Border>
+
+        <Canvas x:Name="cnvBoard" HorizontalAlignment="Left" Height="450" Margin="235,14.667,-60,0" Grid.Row="1" VerticalAlignment="Top" Width="525" Grid.ColumnSpan="2" MouseLeftButtonDown="cnvBoard_MouseDown" MouseMove="cnvBoard_MouseOver" MouseLeave="cnvBoard_MouseLeave" MouseEnter="cnvBoard_MouseOver">
+            <Rectangle
+    Width="525"
+    Height="450"
+    Fill="#160a40" />
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="75"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="150"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="225"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="300"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="375"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="450"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="525"/>
+            <Line
+    X1="00" Y1="00"
+    X2="00" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Left="00"/>
+            <Line
+    X1="00" Y1="00"
+    X2="525" Y2="00"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="00" Y1="75"
+    X2="525" Y2="75"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="00" Y1="150"
+    X2="525" Y2="150"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="00" Y1="225"
+    X2="525" Y2="225"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="0" Y1="300"
+    X2="525" Y2="300"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="00" Y1="375"
+    X2="525" Y2="375"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+            <Line
+    X1="0" Y1="450"
+    X2="525" Y2="450"
+    Stroke="White"
+    StrokeThickness="4" 
+                Canvas.Top="0"/>
+
+
+        </Canvas>
+        <Slider x:Name="sldDifficulty" Minimum="2" Maximum="7" TickFrequency="1" Value="4" HorizontalAlignment="Left" Margin="37,452.667,0,-18" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="128" Ticks="2,3,4,5,6,7" IsSnapToTickEnabled="True" AutoToolTipPlacement="BottomRight">
+        </Slider>
+        <Border CornerRadius="15" BorderThickness="4" BorderBrush="White" Height="48" Width="129" VerticalAlignment="Top" Margin="36,345.667,285,0" Grid.Row="1">
+
+        </Border>
+        <CheckBox x:Name="tckAI" HorizontalAlignment="Left" Margin="61,353.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="40" Width="80" FontSize="14" Foreground="White" FontWeight="Bold" FontFamily="Gill Sans MT" Content="AI" Checked="tckAI_Checked" Unchecked="tckAI_Unchecked" >
+            <CheckBox.LayoutTransform>
+                <ScaleTransform ScaleX="2" ScaleY="2" />
+            </CheckBox.LayoutTransform>
+
+
+        </CheckBox>
+        <TextBlock TextWrapping="Wrap" Text="Depth:" RenderTransformOrigin="0.277,1.33" Margin="54,412.667,314,36" Grid.Row="1" FontFamily="Gill Sans MT" FontSize="24" Foreground="White" FontWeight="Bold" />
+        <Border CornerRadius="15" BorderThickness="4" BorderBrush="White" Height="48" Width="129" VerticalAlignment="Top" Margin="36,402.667,285,0" Grid.Row="1"/>
+
+    </Grid>
+
+</Window>
